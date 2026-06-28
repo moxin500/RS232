@@ -684,13 +684,13 @@ def stdin_lines() -> Iterable[str]:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Bridge laptop RS-232 serial telemetry to Android UDP JSON telemetry.")
+    parser = argparse.ArgumentParser(description="Bridge laptop RS-232 serial telemetry to UDP JSON telemetry.")
     parser.add_argument("--list-ports", action="store_true", help="List Windows COM ports and exit.")
     parser.add_argument("--port", help="Serial port, e.g. COM10. Required unless --stdin or --list-ports is used.")
     parser.add_argument("--baud", type=int, default=9600, help="Serial baud rate. Garmin RS-232 is often 9600.")
     parser.add_argument("--timeout", type=float, default=1.0, help="Serial read timeout in seconds.")
     parser.add_argument("--stdin", action="store_true", help="Read telemetry lines from stdin instead of a COM port.")
-    parser.add_argument("--udp-host", help="Phone IP address or subnet broadcast address.")
+    parser.add_argument("--udp-host", help="Receiving device IP address or subnet broadcast address.")
     parser.add_argument("--udp-port", type=int, default=49005)
     parser.add_argument("--broadcast", action="store_true", help="Enable SO_BROADCAST explicitly.")
     parser.add_argument("--line-format", choices=("auto", "csv", "json", "raw", "garmin-text"), default="auto")
@@ -723,7 +723,7 @@ def main() -> None:
         monitor_garmin_binary(str(args.port), int(args.baud), float(args.timeout), args.max_packets)
         return
     if not args.udp_host:
-        raise SystemExit("Missing --udp-host. Use the phone IP shown in the Android telemetry panel.")
+        raise SystemExit("Missing --udp-host. Use the IP address of the receiving device, or 127.0.0.1 for local dry-run tests.")
 
     csv_fields = parse_csv_fields(args.csv_fields)
     log_path = repo_path(args.log)
